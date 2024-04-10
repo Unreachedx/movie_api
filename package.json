@@ -146,12 +146,5 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "blubb"
-  },
-  "repository": {
-    "type": "git",
-    "url": "github.com/Unreachedx/movie_api"
-  },
-  "author": "Patrick Oliphant",
   "license": "ISC"
 }
