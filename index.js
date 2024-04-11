@@ -43,8 +43,10 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(methodOverride());
 
+
 app.use((err, req, res, next) => {
-  // logic
+  console.error(err.stack); // Log the error stack trace to the terminal
+  res.status(500).send('Something went wrong!');
 });
 
 app.use(express.static('public'));
