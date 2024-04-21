@@ -1,3 +1,82 @@
-Hi all i just wanted to say this is going to be my first Backend API im building from scratch so there is not all to much to see and read at this point, the title gona be "Movie API" thats all i know for now
-I know started to build the API and i have a few endpoints that are working.
-I am just starting to incorperate Express, and some other packages to make the API more accessible.
+## Movie App API Documentation
+
+Welcome to the Movie App API documentation. This API allows you to manage users and access information about movies.
+
+### Base URL
+
+The base URL for accessing the API is:
+
+http://localhost:8080
+
+
+### Endpoints
+
+| Endpoint                                   | Method | Description                                         |
+|--------------------------------------------|--------|-----------------------------------------------------|
+| `/users`                                   | POST   | Create a new user                                  |
+| `/users/:id`                               | PUT    | Update an existing user                            |
+| `/users/:id/:movieTitle`                   | POST   | Add a favorite movie to a user's list             |
+| `/users/:id/:movieTitle`                   | DELETE | Remove a favorite movie from a user's list         |
+| `/users/:id`                               | DELETE | Delete a user by ID                                |
+| `/movies`                                  | GET    | Retrieve a list of all movies                      |
+| `/movies/:title`                           | GET    | Retrieve a movie by its title                      |
+| `/movies/genre/:genre`                     | GET    | Retrieve movies by genre                           |
+| `/movies/directors/:directorName`          | GET    | Retrieve movies by director's name                 |
+
+#### Users Endpoints
+
+- **Create User**
+  - URL: `POST /users`
+  - Description: Create a new user.
+  - Request Body: JSON object with a `name` property.
+  - Response: JSON object representing the created user.
+
+- **Update User**
+  - URL: `PUT /users/:id`
+  - Description: Update an existing user's name.
+  - Parameters: `id` (User ID)
+  - Request Body: JSON object with a `name` property.
+  - Response: JSON object representing the updated user.
+
+- **Add Favorite Movie to User**
+  - URL: `POST /users/:id/:movieTitle`
+  - Description: Add a favorite movie to a user's list.
+  - Parameters: `id` (User ID), `movieTitle` (Title of the movie to add)
+  - Response: Success message indicating the movie was added to the user's favorites.
+
+- **Remove Favorite Movie from User**
+  - URL: `DELETE /users/:id/:movieTitle`
+  - Description: Remove a favorite movie from a user's list.
+  - Parameters: `id` (User ID), `movieTitle` (Title of the movie to remove)
+  - Response: Success message indicating the movie was removed from the user's favorites.
+
+- **Delete User**
+  - URL: `DELETE /users/:id`
+  - Description: Delete a user by ID.
+  - Parameters: `id` (User ID)
+  - Response: Success message indicating the user was deleted.
+
+#### Movies Endpoints
+
+- **List All Movies**
+  - URL: `GET /movies`
+  - Description: Retrieve a list of all movies.
+  - Response: JSON array containing movie objects.
+
+- **Get Movie by Title**
+  - URL: `GET /movies/:title`
+  - Description: Retrieve a movie by its title.
+  - Parameters: `title` (Title of the movie)
+  - Response: JSON object representing the movie.
+
+- **Get Movies by Genre**
+  - URL: `GET /movies/genre/:genre`
+  - Description: Retrieve movies by genre.
+  - Parameters: `genre` (Genre of the movies)
+  - Response: JSON array containing movie objects with the specified genre.
+
+- **Get Movies by Director**
+  - URL: `GET /movies/directors/:directorName`
+  - Description: Retrieve movies by director's name.
+  - Parameters: `directorName` (Name of the director)
+  - Response: JSON array containing movie objects directed by the specified director.

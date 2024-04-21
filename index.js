@@ -1,56 +1,231 @@
-const express = require('express'),
-  morgan = require('morgan'),
-  fs = require('fs'), // import built in node modules fs and path 
-  path = require('path');
+const express = require('express');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
+const uuid = require('uuid');
+const bodyParser = require('body-parser'); // Require bodyParser here
+const methodOverride = require('method-override'); // Require methodOverride here
 
 const app = express();
-// create a write stream (in append mode)
-// a ‘log.txt’ file is created in root directory
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
 
-// array of top 10 movies
-const topMovies = [
-  { title: 'Movie 1', year: '2000' },
-  { title: 'Movie 2', year: '2001' },
-  { title: 'Movie 3', year: '2002' },
-  { title: 'Movie 4', year: '2003' },
-  { title: 'Movie 5', year: '2004' },
-  { title: 'Movie 6', year: '2005' },
-  { title: 'Movie 7', year: '2006' },
-  { title: 'Movie 8', year: '2007' },
-  { title: 'Movie 9', year: '2008' },
-  { title: 'Movie 10', year: '2009' },
+// Middleware setup
+app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' }) }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride());
+
+// Array of users
+const users = [
+  {
+    id: 1,
+    name: "Daniel",
+    favoriteMovies:[]
+},
+{
+    id: 2,
+    name: "John",
+    favoriteMovies:["The Shawshank Redemption", "The Godfather"]
+    }
 ];
 
-// setup the logger
-app.use(morgan('combined', {stream: accessLogStream}));
+// Create new user
+app.post('/users', (req, res) => {
+  const newUser = req.body;
 
+  if (newUser.name) {
+    newUser.id = uuid.v4();
+    users.push(newUser);
+    res.status(201).json(newUser);
+  } else {
+    res.status(400).send('Users need names');
+  }
+});
+
+// Update
+
+app.put('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const updatedUser = req.body;
+
+  let user = users.find(user => user.id == id);
+
+  if (user) {
+    user.name = updatedUser.name;
+    res.status(200).json(user);
+  } else {
+    res.status(400).send('User not found');
+  }
+});
+
+// CREATE
+app.post('/users/:id/:movieTitle', (req, res) => {
+  const { id, movieTitle } = req.params;
+
+
+  let user = users.find(user => user.id == id);
+
+  if (user) {
+    user.favoriteMovies.push(movieTitle);
+    res.status(200).send(`${movieTitle} added to ${id}'s favorite movies`);
+  } else {
+    res.status(400).send('User not found');
+  }
+});
+
+// DELETE
+app.delete('/users/:id/:movieTitle', (req, res) => {
+  const { id, movieTitle } = req.params;
+
+
+  let user = users.find(user => user.id == id);
+
+  if (user) {
+    user.favoriteMovies = user.favoriteMovies.filter(movie => movie !== movieTitle);
+    res.status(200).send(`${movieTitle} has been removed from ${id}'s favorite movies`);
+  } else {
+    res.status(400).send('User not found');
+  }
+});
+
+// DELETE
+app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Find the user with the specified id
+  const userIndex = users.findIndex(user => user.id === id);
+
+  if (userIndex !== -1) {
+    // Remove the user from the users array
+    users.splice(userIndex, 1);
+    res.status(200).json(users); // Send updated list of users
+    // res.status(200).send(`User ${id} has been deleted`); // Optional response
+  } else {
+    res.status(404).send('User not found'); // User with the specified id not found
+  }
+});
+
+
+
+// Array of movies
+const movies = [
+  {
+    "Name": "The Shawshank Redemption",
+    "Title": "The Shawshank Redemption",
+    "Director": "Frank Darabont",
+    "Genre": "Drama"
+  },
+  {
+    "Name": "The Godfather",
+    "Title": "The Godfather",
+    "Director": "Francis Ford Coppola",
+    "Genre": "Crime"
+  },
+  {
+    "Name": "The Dark Knight",
+    "Title": "The Dark Knight",
+    "Director": "Christopher Nolan",
+    "Genre": "Action"
+  },
+  {
+    "Name": "Pulp Fiction",
+    "Title": "Pulp Fiction",
+    "Director": "Quentin Tarantino",
+    "Genre": "Crime"
+  },
+  {
+    "Name": "The Lord of the Rings: The Return of the King",
+    "Title": "The Lord of the Rings: The Return of the King",
+    "Director": "Peter Jackson",
+    "Genre": "Fantasy"
+  },
+  {
+    "Name": "Forrest Gump",
+    "Title": "Forrest Gump",
+    "Director": "Robert Zemeckis",
+    "Genre": "Drama"
+  },
+  {
+    "Name": "Inception",
+    "Title": "Inception",
+    "Director": "Christopher Nolan",
+    "Genre": "Sci-Fi"
+  },
+  {
+    "Name": "The Matrix",
+    "Title": "The Matrix",
+    "Director": "The Wachowskis",
+    "Genre": "Sci-Fi"
+  },
+  {
+    "Name": "Schindler's List",
+    "Title": "Schindler's List",
+    "Director": "Steven Spielberg",
+    "Genre": "Drama"
+  },
+  {
+    "Name": "Fight Club",
+    "Title": "Fight Club",
+    "Director": "David Fincher",
+    "Genre": "Drama"
+  }
+];
+
+// Welcome message
 app.get('/', (req, res) => {
   res.send('Welcome to my movie app!');
 });
 
+// Read a list of movies
 app.get('/movies', (req, res) => {
-  res.json(topMovies);
+  res.status(200).json(movies);
 });
 
-const bodyParser = require('body-parser'),
-  methodOverride = require('method-override');
+// Get a movie by title
+app.get('/movies/:title', (req, res) => {
+  const { title } = req.params;
+  const movie = movies.find(move => move.Title === title).Title;
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+  if (movie) {
+    res.status(200).json(movie);
+  } else {
+    res.status(404).send('Movie not found');
+  }
+});
 
-app.use(bodyParser.json());
-app.use(methodOverride());
+// Get movies by genre
+app.get('/movies/genre/:genre', (req, res) => {
+  const { genre } = req.params; // Changed from genreName to genre
+  const moviesByGenre = movies.find(movie => movie.Genre === genre).Genre;
 
+  if (moviesByGenre.length > 0) {
+    res.status(200).json(moviesByGenre);
+  } else {
+    res.status(404).send('No movies found for the specified genre');
+  }
+});
 
+// Search for a movie by director's name
+app.get('/movies/directors/:directorName', (req, res) => {
+  const { directorName } = req.params;
+  const movie = movies.find(movie => movie.Director === directorName).Director;
+
+  if (movie) {
+    res.status(200).json(movie);
+  } else {
+    res.status(404).send('Director not found');
+  }
+});
+
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack); // Log the error stack trace to the terminal
+  console.error(err.stack);
   res.status(500).send('Something went wrong!');
 });
 
+// Static files
 app.use(express.static('public'));
 
+// Start the server
 app.listen(8080, () => {
   console.log('Your app is listening on port 8080.');
 });
