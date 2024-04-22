@@ -247,7 +247,9 @@ app.get('/movies/genre/:genre', (req, res) => {
 // Search for a movie by director's name
 app.get('/movies/directors/:directorName', (req, res) => {
   const { directorName } = req.params;
-  const moviesByDirector = movies.filter(movie => movie.Director === directorName);
+
+  // Filter movies by director's name
+  const moviesByDirector = movies.filter(movie => movie.Director.Name === directorName);
 
   if (moviesByDirector.length > 0) {
     res.status(200).json(moviesByDirector);
