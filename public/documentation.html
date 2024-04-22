@@ -1,82 +1,164 @@
-##  Movie App API Documentation
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie App API Documentation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+    }
+    h1, h2, h3 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    pre {
+      background-color: #f8f8f8;
+      padding: 10px;
+      border: 1px solid #ddd;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
 
-Welcome to the Movie App API documentation. This API allows you to manage users and access information about movies.
+  <h1>Movie App API Documentation</h1>
 
-### Base URL
+  <p>Welcome to the Movie App API documentation. This API allows you to manage users and access information about movies.</p>
 
-The base URL for accessing the API is:
+  <h2>Base URL</h2>
 
-http://localhost:8080
+  <p>The base URL for accessing the API is:</p>
 
+  <pre>http://localhost:8080</pre>
 
-### Endpoints
+  <h2>Endpoints</h2>
 
-| Endpoint                                   | Method | Description                                         |
-|--------------------------------------------|--------|-----------------------------------------------------|
-| `/users`                                   | POST   | Create a new user                                  |
-| `/users/:id`                               | PUT    | Update an existing user                            |
-| `/users/:id/:movieTitle`                   | POST   | Add a favorite movie to a user's list             |
-| `/users/:id/:movieTitle`                   | DELETE | Remove a favorite movie from a user's list         |
-| `/users/:id`                               | DELETE | Delete a user by ID                                |
-| `/movies`                                  | GET    | Retrieve a list of all movies                      |
-| `/movies/:title`                           | GET    | Retrieve a movie by its title                      |
-| `/movies/genre/:genre`                     | GET    | Retrieve movies by genre                           |
-| `/movies/directors/:directorName`          | GET    | Retrieve movies by director's name                 |
+  <table>
+    <thead>
+      <tr>
+        <th>Endpoint</th>
+        <th>Method</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>/users</td>
+        <td>POST</td>
+        <td>Create a new user</td>
+      </tr>
+      <tr>
+        <td>/users/:id</td>
+        <td>PUT</td>
+        <td>Update an existing user</td>
+      </tr>
+      <tr>
+        <td>/users/:id/:movieTitle</td>
+        <td>POST</td>
+        <td>Add a favorite movie to a user's list</td>
+      </tr>
+      <tr>
+        <td>/users/:id/:movieTitle</td>
+        <td>DELETE</td>
+        <td>Remove a favorite movie from a user's list</td>
+      </tr>
+      <tr>
+        <td>/users/:id</td>
+        <td>DELETE</td>
+        <td>Delete a user by ID</td>
+      </tr>
+      <tr>
+        <td>/movies</td>
+        <td>GET</td>
+        <td>Retrieve a list of all movies</td>
+      </tr>
+      <tr>
+        <td>/movies/:title</td>
+        <td>GET</td>
+        <td>Retrieve a movie by its title</td>
+      </tr>
+      <tr>
+        <td>/movies/genre/:genre</td>
+        <td>GET</td>
+        <td>Retrieve movies by genre</td>
+      </tr>
+      <tr>
+        <td>/movies/directors/:directorName</td>
+        <td>GET</td>
+        <td>Retrieve movies by director's name</td>
+      </tr>
+    </tbody>
+  </table>
 
-#### Users Endpoints
+  <h3>Users Endpoints</h3>
 
-- **Create User**
-  - URL: `POST /users`
-  - Description: Create a new user.
-  - Request Body: JSON object with a `name` property.
-  - Response: JSON object representing the created user.
+  <ul>
+    <li>
+      <strong>Create User</strong>
+      <pre>POST /users</pre>
+      <p>Create a new user.</p>
+    </li>
+    <li>
+      <strong>Update User</strong>
+      <pre>PUT /users/:id</pre>
+      <p>Update an existing user's name.</p>
+    </li>
+    <li>
+      <strong>Add Favorite Movie to User</strong>
+      <pre>POST /users/:id/:movieTitle</pre>
+      <p>Add a favorite movie to a user's list.</p>
+    </li>
+    <li>
+      <strong>Remove Favorite Movie from User</strong>
+      <pre>DELETE /users/:id/:movieTitle</pre>
+      <p>Remove a favorite movie from a user's list.</p>
+    </li>
+    <li>
+      <strong>Delete User</strong>
+      <pre>DELETE /users/:id</pre>
+      <p>Delete a user by ID.</p>
+    </li>
+  </ul>
 
-- **Update User**
-  - URL: `PUT /users/:id`
-  - Description: Update an existing user's name.
-  - Parameters: `id` (User ID)
-  - Request Body: JSON object with a `name` property.
-  - Response: JSON object representing the updated user.
+  <h3>Movies Endpoints</h3>
 
-- **Add Favorite Movie to User**
-  - URL: `POST /users/:id/:movieTitle`
-  - Description: Add a favorite movie to a user's list.
-  - Parameters: `id` (User ID), `movieTitle` (Title of the movie to add)
-  - Response: Success message indicating the movie was added to the user's favorites.
+  <ul>
+    <li>
+      <strong>List All Movies</strong>
+      <pre>GET /movies</pre>
+      <p>Retrieve a list of all movies.</p>
+    </li>
+    <li>
+      <strong>Get Movie by Title</strong>
+      <pre>GET /movies/:title</pre>
+      <p>Retrieve a movie by its title.</p>
+    </li>
+    <li>
+      <strong>Get Movies by Genre</strong>
+      <pre>GET /movies/genre/:genre</pre>
+      <p>Retrieve movies by genre.</p>
+    </li>
+    <li>
+      <strong>Get Movies by Director</strong>
+      <pre>GET /movies/directors/:directorName</pre>
+      <p>Retrieve movies by director's name.</p>
+    </li>
+  </ul>
 
-- **Remove Favorite Movie from User**
-  - URL: `DELETE /users/:id/:movieTitle`
-  - Description: Remove a favorite movie from a user's list.
-  - Parameters: `id` (User ID), `movieTitle` (Title of the movie to remove)
-  - Response: Success message indicating the movie was removed from the user's favorites.
-
-- **Delete User**
-  - URL: `DELETE /users/:id`
-  - Description: Delete a user by ID.
-  - Parameters: `id` (User ID)
-  - Response: Success message indicating the user was deleted.
-
-#### Movies Endpoints
-
-- **List All Movies**
-  - URL: `GET /movies`
-  - Description: Retrieve a list of all movies.
-  - Response: JSON array containing movie objects.
-
-- **Get Movie by Title**
-  - URL: `GET /movies/:title`
-  - Description: Retrieve a movie by its title.
-  - Parameters: `title` (Title of the movie)
-  - Response: JSON object representing the movie.
-
-- **Get Movies by Genre**
-  - URL: `GET /movies/genre/:genre`
-  - Description: Retrieve movies by genre.
-  - Parameters: `genre` (Genre of the movies)
-  - Response: JSON array containing movie objects with the specified genre.
-
-- **Get Movies by Director**
-  - URL: `GET /movies/directors/:directorName`
-  - Description: Retrieve movies by director's name.
-  - Parameters: `directorName` (Name of the director)
-  - Response: JSON array containing movie objects directed by the specified director.
+</body>
+</html>
