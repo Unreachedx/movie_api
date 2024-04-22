@@ -194,8 +194,8 @@ app.get('/movies/:title', (req, res) => {
 
 // Get movies by genre
 app.get('/movies/genre/:genre', (req, res) => {
-  const { genre } = req.params; // Changed from genreName to genre
-  const moviesByGenre = movies.find(movie => movie.Genre === genre).Genre;
+  const { genre } = req.params;
+  const moviesByGenre = movies.filter(movie => movie.Genre === genre);
 
   if (moviesByGenre.length > 0) {
     res.status(200).json(moviesByGenre);
@@ -207,12 +207,12 @@ app.get('/movies/genre/:genre', (req, res) => {
 // Search for a movie by director's name
 app.get('/movies/directors/:directorName', (req, res) => {
   const { directorName } = req.params;
-  const movie = movies.find(movie => movie.Director === directorName).Director;
+  const moviesByDirector = movies.filter(movie => movie.Director === directorName);
 
-  if (movie) {
-    res.status(200).json(movie);
+  if (moviesByDirector.length > 0) {
+    res.status(200).json(moviesByDirector);
   } else {
-    res.status(404).send('Director not found');
+    res.status(404).send('No movies found for the specified director');
   }
 });
 
