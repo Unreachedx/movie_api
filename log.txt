@@ -89,3 +89,4 @@ testing something::1 - - [10/Apr/2024:19:24:30 +0000] "GET / HTTP/1.1" 200 18 "-
 ::1 - - [22/Apr/2024:18:23:13 +0000] "GET /movies/directors/ HTTP/1.1" 500 21 "-" "PostmanRuntime/7.37.3"
 ::1 - - [22/Apr/2024:18:24:02 +0000] "GET /movies/genre/Drama HTTP/1.1" 200 1398 "-" "PostmanRuntime/7.37.3"
 ::1 - - [22/Apr/2024:18:25:15 +0000] "GET /movies/directors/Christopher%20Nolan HTTP/1.1" 404 42 "-" "PostmanRuntime/7.37.3"
+::1 - - [22/Apr/2024:18:26:57 +0000] "GET /movies/directors/Christopher%20Nolan HTTP/1.1" 200 735 "-" "PostmanRuntime/7.37.3"
