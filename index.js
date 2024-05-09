@@ -204,7 +204,7 @@ app.delete('/users/:Username', async (req, res) => {
 
 
 
-/* // Array of movies
+// Array of movies
 const movies = [
     {
       "Name": "The Shawshank Redemption",
@@ -306,32 +306,41 @@ const movies = [
       },
       "Genre": "Drama"
     }
-  ] */
+  ]
 
 // Welcome message
 app.get('/', (req, res) => {
   res.send('Welcome to my movie app!');
 });
 
+
 // Read a list of movies
-app.get('/movies', (req, res) => {
-  res.status(200).json(movies);
+app.get('/movies', async (req, res) => {
+  try {
+    const movies = await Movies.find();
+    res.status(200).json(movies);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: ' + error);
+  }
 });
 
-// Get a movie by title
 app.get('/movies/:title', async (req, res) => {
   const { title } = req.params;
+  console.log('Searching for movie with title:', title);
 
   try {
     const movie = await Movies.findOne({ Title: title });
+    console.log('Found movie:', movie);
 
     if (movie) {
       res.status(200).json(movie);
     } else {
+      console.log('Movie not found');
       res.status(404).send('Movie not found');
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error retrieving movie:', error);
     res.status(500).send('Error: ' + error);
   }
 });
