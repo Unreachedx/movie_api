@@ -20,6 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
+
 // Array of users
 const users = [
   {
