@@ -395,3 +395,7 @@ testing something::1 - - [10/Apr/2024:19:24:30 +0000] "GET / HTTP/1.1" 200 18 "-
 ::1 - - [17/May/2024:11:40:54 +0000] "POST /users?paddy90&paddy90dev HTTP/1.1" 400 23 "-" "PostmanRuntime/7.38.0"
 ::1 - - [17/May/2024:11:42:14 +0000] "POST /login/paddy90&paddy90dev HTTP/1.1" 404 168 "-" "PostmanRuntime/7.38.0"
 ::1 - - [17/May/2024:11:42:36 +0000] "POST /login?paddy90&paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
+::1 - - [17/May/2024:11:43:13 +0000] "POST /login?paddy90&paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
+::1 - - [17/May/2024:11:47:52 +0000] "POST /login?Username=paddy90&Password=paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
+::1 - - [17/May/2024:11:48:13 +0000] "POST /login?Username=paddy90&Password=paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
+::1 - - [17/May/2024:11:51:01 +0000] "POST /login?Username=paddy90&Password=paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
