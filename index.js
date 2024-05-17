@@ -24,7 +24,18 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-// Array of users
+app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  await Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+/* // Array of users
 const users = [
   {
     id: 1,
@@ -36,7 +47,7 @@ const users = [
     name: "John",
     favoriteMovies:["The Shawshank Redemption", "The Godfather"]
     }
-];
+]; */
 
 // Welcome message
 app.get('/', (req, res) => {
