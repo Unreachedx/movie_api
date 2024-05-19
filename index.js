@@ -8,6 +8,8 @@ const uuid = require('uuid'); // Require uuid
 const methodOverride = require('method-override'); // Require methodOverride here
 const Movies = Models.Movie;
 const Users = Models.User;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -56,29 +58,24 @@ app.get('/', (req, res) => {
 
 // Create new user
 app.post('/users', async (req, res) => {
-  await Users.findOne({ Username: req.body.Username })
-    .then((user) => {
-      if (user) {
-        return res.status(400).send(req.body.Username + 'already exists');
-      } else {
-        Users
-          .create({
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday
-          })
-          .then((user) =>{res.status(201).json(user) })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send('Error: ' + error);
-        })
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error: ' + error);
-    });
+  try {
+    const existingUser = await Users.findOne({ Username: req.body.Username });
+    if (existingUser) {
+      return res.status(400).send(req.body.Username + ' already exists');
+    } else {
+      const hashedPassword = await bcrypt.hash(req.body.Password, saltRounds);
+      const newUser = await Users.create({
+        Username: req.body.Username,
+        Password: hashedPassword,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday
+      });
+      return res.status(201).json(newUser);
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Error: ' + error);
+  }
 });
 
 // Get all users

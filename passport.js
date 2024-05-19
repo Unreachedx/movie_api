@@ -1,4 +1,4 @@
-const passport = require('passport'),
+  const passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy,
   Models = require('./models.js'),
   passportJWT = require('passport-jwt');
@@ -7,34 +7,36 @@ let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJWT = passportJWT.ExtractJwt;
 
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: 'Username',
-      passwordField: 'Password',
-    },
-    async (username, password, callback) => {
-      console.log(`${username} ${password}`);
-      await Users.findOne({ Username: username })
-      .then((user) => {
-        if (!user) {
-          console.log('incorrect username');
-          return callback(null, false, {
-            message: 'Incorrect username or password.',
-          });
-        }
-        console.log('finished');
-        return callback(null, user);
-      })
-      .catch((error) => {
-        if (error) {
+  passport.use(
+    new LocalStrategy(
+      {
+        usernameField: 'Username',
+        passwordField: 'Password',
+      },
+      async (username, password, callback) => {
+        try {
+          const user = await Users.findOne({ Username: username });
+          if (!user) {
+            console.log('incorrect username');
+            return callback(null, false, { message: 'Incorrect username or password.' });
+          }
+  
+          console.log(user, 'user');
+          const isPasswordValid = await user.isValidPassword(password);
+          if (!isPasswordValid) {
+            console.log('incorrect password');
+            return callback(null, false, { message: 'Incorrect username or password.' });
+          }
+  
+          console.log('finished');
+          return callback(null, user);
+        } catch (error) {
           console.log(error);
           return callback(error);
         }
-      })
-    }
-  )
-);
+      }
+    )
+  );
 
 
 passport.use(new JWTStrategy({

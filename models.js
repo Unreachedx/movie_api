@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
+const SALT_ROUNDS = 10;
 
 let movieSchema = mongoose.Schema({
   Title: { type: String, required: true },
@@ -23,6 +26,11 @@ let userSchema = mongoose.Schema({
   Birthday: Date,
   FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie'}]
 });
+
+// Method to validate password
+userSchema.methods.isValidPassword = async function(password) {
+  return await bcrypt.compare(password, this.Password);
+};
 
 let Movie = mongoose.model('Movie', movieSchema);
 let User = mongoose.model('User', userSchema);

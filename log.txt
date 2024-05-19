@@ -399,3 +399,8 @@ testing something::1 - - [10/Apr/2024:19:24:30 +0000] "GET / HTTP/1.1" 200 18 "-
 ::1 - - [17/May/2024:11:47:52 +0000] "POST /login?Username=paddy90&Password=paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
 ::1 - - [17/May/2024:11:48:13 +0000] "POST /login?Username=paddy90&Password=paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
 ::1 - - [17/May/2024:11:51:01 +0000] "POST /login?Username=paddy90&Password=paddy90dev HTTP/1.1" 500 21 "-" "PostmanRuntime/7.38.0"
+::1 - - [18/May/2024:00:42:22 +0000] "POST /login?Username=paddy90&Password=paddy90dev HTTP/1.1" 200 572 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/May/2024:00:44:11 +0000] "GET /movies/ HTTP/1.1" 401 - "-" "PostmanRuntime/7.39.0"
+::1 - - [18/May/2024:00:45:05 +0000] "GET /movies/ HTTP/1.1" 401 - "-" "PostmanRuntime/7.39.0"
+::1 - - [18/May/2024:00:45:09 +0000] "GET /movies/ HTTP/1.1" 401 - "-" "PostmanRuntime/7.39.0"
+::1 - - [18/May/2024:00:45:51 +0000] "GET /movies/ HTTP/1.1" 201 1622 "-" "PostmanRuntime/7.39.0"
