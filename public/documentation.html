@@ -63,24 +63,34 @@
         <td>Create a new user</td>
       </tr>
       <tr>
-        <td>/users/:id</td>
+        <td>/users</td>
+        <td>GET</td>
+        <td>Retrieve a list of all users</td>
+      </tr>
+      <tr>
+        <td>/users/:Username</td>
+        <td>GET</td>
+        <td>Retrieve a user by username</td>
+      </tr>
+      <tr>
+        <td>/users/:Username</td>
         <td>PUT</td>
-        <td>Update an existing user</td>
+        <td>Update an existing user by username</td>
       </tr>
       <tr>
-        <td>/users/:id/:movieTitle</td>
+        <td>/users/:Username</td>
+        <td>DELETE</td>
+        <td>Delete a user by username</td>
+      </tr>
+      <tr>
+        <td>/users/:Username/favorites/:movieID</td>
         <td>POST</td>
-        <td>Add a favorite movie to a user's list</td>
+        <td>Add a movie to a user's list of favorites</td>
       </tr>
       <tr>
-        <td>/users/:id/:movieTitle</td>
+        <td>/users/:Username/favorites/:movieID</td>
         <td>DELETE</td>
-        <td>Remove a favorite movie from a user's list</td>
-      </tr>
-      <tr>
-        <td>/users/:id</td>
-        <td>DELETE</td>
-        <td>Delete a user by ID</td>
+        <td>Remove a movie from a user's list of favorites</td>
       </tr>
       <tr>
         <td>/movies</td>
@@ -98,7 +108,7 @@
         <td>Retrieve movies by genre</td>
       </tr>
       <tr>
-        <td>/movies/directors/:directorName</td>
+        <td>/directors/:directorName</td>
         <td>GET</td>
         <td>Retrieve movies by director's name</td>
       </tr>
@@ -112,26 +122,50 @@
       <strong>Create User</strong>
       <pre>POST /users</pre>
       <p>Create a new user.</p>
+      <p><strong>Request Body:</strong></p>
+      <pre>{
+  "Username": "johndoe",
+  "Password": "password123",
+  "Email": "johndoe@example.com",
+  "Birthday": "1990-01-01"
+}</pre>
+    </li>
+    <li>
+      <strong>Get All Users</strong>
+      <pre>GET /users</pre>
+      <p>Retrieve a list of all users.</p>
+    </li>
+    <li>
+      <strong>Get User by Username</strong>
+      <pre>GET /users/:Username</pre>
+      <p>Retrieve a user by username.</p>
     </li>
     <li>
       <strong>Update User</strong>
-      <pre>PUT /users/:id</pre>
-      <p>Update an existing user's name.</p>
+      <pre>PUT /users/:Username</pre>
+      <p>Update an existing user by username.</p>
+      <p><strong>Request Body:</strong></p>
+      <pre>{
+  "Username": "newusername",
+  "Password": "newpassword123",
+  "Email": "newemail@example.com",
+  "Birthday": "1991-02-02"
+}</pre>
+    </li>
+    <li>
+      <strong>Delete User</strong>
+      <pre>DELETE /users/:Username</pre>
+      <p>Delete a user by username.</p>
     </li>
     <li>
       <strong>Add Favorite Movie to User</strong>
-      <pre>POST /users/:id/:movieTitle</pre>
+      <pre>POST /users/:Username/favorites/:movieID</pre>
       <p>Add a favorite movie to a user's list.</p>
     </li>
     <li>
       <strong>Remove Favorite Movie from User</strong>
-      <pre>DELETE /users/:id/:movieTitle</pre>
+      <pre>DELETE /users/:Username/favorites/:movieID</pre>
       <p>Remove a favorite movie from a user's list.</p>
-    </li>
-    <li>
-      <strong>Delete User</strong>
-      <pre>DELETE /users/:id</pre>
-      <p>Delete a user by ID.</p>
     </li>
   </ul>
 
@@ -155,7 +189,7 @@
     </li>
     <li>
       <strong>Get Movies by Director</strong>
-      <pre>GET /movies/directors/:directorName</pre>
+      <pre>GET /directors/:directorName</pre>
       <p>Retrieve movies by director's name.</p>
     </li>
   </ul>
