@@ -10,8 +10,13 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const cors = require('cors');
 
 
+
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
@@ -21,10 +26,16 @@ app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, '
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
-
-let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport');
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Movies.find()
