@@ -56,24 +56,31 @@ app.get('/', (req, res) => {
 
 // Create new user
 app.post('/users', async (req, res) => {
-  try {
-    const existingUser = await Users.findOne({ Username: req.body.Username });
-    if (existingUser) {
-      return res.status(400).send(req.body.Username + ' already exists');
-    } else {
-      const hashedPassword = await bcrypt.hash(req.body.Password, saltRounds);
-      const newUser = await Users.create({
-        Username: req.body.Username,
-        Password: hashedPassword,
-        Email: req.body.Email,
-        Birthday: req.body.Birthday
-      });
-      return res.status(201).json(newUser);
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send('Error: ' + error);
-  }
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  await Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
+    .then((user) => {
+      if (user) {
+      //If the user is found, send a response that it already exists
+        return res.status(400).send(req.body.Username + ' already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) => { res.status(201).json(user) })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 // Get all users
