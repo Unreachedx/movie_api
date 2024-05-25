@@ -37,19 +37,6 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
     });
 });
 
-/* // Array of users
-const users = [
-  {
-    id: 1,
-    name: "Daniel",
-    favoriteMovies:[]
-},
-{
-    id: 2,
-    name: "John",
-    favoriteMovies:["The Shawshank Redemption", "The Godfather"]
-    }
-]; */
 
 // Welcome message
 app.get('/', (req, res) => {
