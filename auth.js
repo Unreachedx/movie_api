@@ -1,36 +1,78 @@
-const jwtSecret = 'your_jwt_secret'; // This has to be the same key used in the JWTStrategy
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const Models = require('./models.js');
+const passportJWT = require('passport-jwt');
 
-const jwt = require('jsonwebtoken'),
- passport = require('passport');
+let Users = Models.User;
+let JWTStrategy = passportJWT.Strategy;
+let ExtractJWT = passportJWT.ExtractJwt;
 
- require('./passport'); // Your local passport file
+module.exports = (app) => {
+  const jwt = require('jsonwebtoken');
 
+  app.use(passport.initialize());
 
- let generateJWTToken = (user) => {
-  return jwt.sign(user, jwtSecret, {
-    subject: user.Username, // This is the username you’re encoding in the JWT
-    expiresIn: '7d', // This specifies that the token will expire in 7 days
-    algorithm: 'HS256' // This is the algorithm used to “sign” or encode the values of the JWT
-  });
-}
- 
-  /* Post login */
-  module.exports = (router) => {
-    router.post('/login', (req, res) => {
-      passport.authenticate('local', { session: false }, (error, user, info) => {
-        if (error || !user) {
-          return res.status(400).json({
-            message: 'Something is not right',
-            user: user
-          });
-        }
-        req.login(user, { session: false }, (error) => {
-          if (error) {
-            res.send(error);
-          }
-          let token = generateJWTToken(user.toJSON());
-          return res.json ({ user, token });
-        });
-        })(req, res);
+  passport.use(new LocalStrategy({
+    usernameField: 'Username',
+    passwordField: 'Password'
+  }, (username, password, callback) => {
+    console.log(username + '  ' + password);
+    Users.findOne({ Username: username }, (error, user) => {
+      if (error) {
+        console.log(error);
+        return callback(error);
+      }
+
+      if (!user) {
+        console.log('incorrect username');
+        return callback(null, false, { message: 'Incorrect username.' });
+      }
+
+      if (!user.validatePassword(password)) {
+        console.log('incorrect password');
+        return callback(null, false, { message: 'Incorrect password.' });
+      }
+
+      console.log('finished');
+      return callback(null, user);
+    });
+  }));
+
+  passport.use(new JWTStrategy({
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey: 'your_jwt_secret'
+  }, (jwtPayload, callback) => {
+    return Users.findById(jwtPayload._id)
+      .then((user) => {
+        return callback(null, user);
+      })
+      .catch((error) => {
+        return callback(error)
       });
-    }
+  }));
+
+  app.post('/login', (req, res) => {
+    passport.authenticate('local', { session: false }, (error, user, info) => {
+      if (error || !user) {
+        return res.status(400).json({
+          message: 'Something is not right',
+          user: user
+        });
+      }
+
+      req.login(user, { session: false }, (error) => {
+        if (error) {
+          res.send(error);
+        }
+
+        const token = jwt.sign(user.toJSON(), 'your_jwt_secret', {
+          subject: user.Username,
+          expiresIn: '7d',
+          algorithm: 'HS256'
+        });
+
+        return res.json({ user, token });
+      });
+    })(req, res);
+  });
+};

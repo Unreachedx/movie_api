@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
+const app = express();
 
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -17,7 +18,6 @@ const auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-const app = express();
 
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
