@@ -54,29 +54,31 @@ module.exports = (app) => {
       });
   }));
 
-  app.post('/login', (req, res) => {
-    passport.authenticate('local', { session: false }, (error, user, info) => {
-      if (error || !user) {
-        console.log('Authentication failed:', error, info);
-        return res.status(400).json({
-          message: 'Something is not right',
-          user: user
-        });
-      }
+  const jwtSecret = 'your_jwt_secret';
 
-      req.login(user, { session: false }, (error) => {
-        if (error) {
-          res.send(error);
+  module.exports = (app) => {
+    const jwt = require('jsonwebtoken');
+  
+    app.post('/login', (req, res) => {
+      passport.authenticate('local', { session: false }, (error, user, info) => {
+        if (error || !user) {
+          console.log('Authentication failed:', error || info);
+          return res.status(400).json({
+            message: 'Invalid credentials'
+          });
         }
-
-        const token = jwt.sign(user.toJSON(), 'your_jwt_secret', {
-          subject: user.Username,
-          expiresIn: '7d',
-          algorithm: 'HS256'
+  
+        req.login(user, { session: false }, (error) => {
+          if (error) {
+            return res.status(500).send(error);
+          }
+  
+          const token = jwt.sign({ username: user.Username }, jwtSecret, {
+            expiresIn: '7d'
+          });
+  
+          return res.json({ user, token });
         });
-
-        return res.json({ user, token });
-      });
-    })(req, res);
-  });
-};
+      })(req, res);
+    });
+  };
