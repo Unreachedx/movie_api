@@ -16,7 +16,7 @@ module.exports = (app) => {
     usernameField: 'Username',
     passwordField: 'Password'
   }, (username, password, callback) => {
-    console.log(username + '  ' + password);
+    console.log(`${username} ${password}`);
     Users.findOne({ Username: username }, (error, user) => {
       if (error) {
         console.log(error);
@@ -28,7 +28,7 @@ module.exports = (app) => {
         return callback(null, false, { message: 'Incorrect username.' });
       }
 
-      if (!user.validatePassword(password)) {
+      if (!user.isValidPassword(password)) {
         console.log('incorrect password');
         return callback(null, false, { message: 'Incorrect password.' });
       }
@@ -47,13 +47,14 @@ module.exports = (app) => {
         return callback(null, user);
       })
       .catch((error) => {
-        return callback(error)
+        return callback(error);
       });
   }));
 
   app.post('/login', (req, res) => {
     passport.authenticate('local', { session: false }, (error, user, info) => {
       if (error || !user) {
+        console.log('Authentication failed:', error, info);
         return res.status(400).json({
           message: 'Something is not right',
           user: user
