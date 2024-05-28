@@ -16,24 +16,27 @@ module.exports = (app) => {
     usernameField: 'Username',
     passwordField: 'Password'
   }, (username, password, callback) => {
-    console.log(`${username} ${password}`);
+    console.log(`Attempting login for username: ${username}`);
     Users.findOne({ Username: username }, (error, user) => {
       if (error) {
-        console.log(error);
+        console.log('Error occurred while finding user:', error);
         return callback(error);
       }
-
+  
       if (!user) {
-        console.log('incorrect username');
+        console.log('User not found for username:', username);
         return callback(null, false, { message: 'Incorrect username.' });
       }
-
-      if (!user.isValidPassword(password)) {
-        console.log('incorrect password');
+  
+      const passwordIsValid = user.isValidPassword(password);
+      console.log(`Password validation result for username ${username}: ${passwordIsValid}`);
+  
+      if (!passwordIsValid) {
+        console.log('Incorrect password for username:', username);
         return callback(null, false, { message: 'Incorrect password.' });
       }
-
-      console.log('finished');
+  
+      console.log(`User authenticated successfully for username: ${username}`);
       return callback(null, user);
     });
   }));
