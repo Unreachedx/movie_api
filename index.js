@@ -81,7 +81,7 @@ app.post('/users', [
 });
 
 // Get all users
-app.get('/users', async (req, res) => {
+app.get('/users', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.find()
     .then((users) => {
       res.status(201).json(users);
@@ -93,7 +93,7 @@ app.get('/users', async (req, res) => {
 });
 
 // Get a user by username
-app.get('/users/:Username', async (req, res) => {
+app.get('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { Username } = req.params;
 
   try {
@@ -209,7 +209,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
 });
 
 // Read a specific movie by title
-app.get('/movies/:title', async (req, res) => {
+app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { title } = req.params;
 
   try {
@@ -225,7 +225,7 @@ app.get('/movies/:title', async (req, res) => {
 });
 
 // Read movies by genre
-app.get('/movies/genre/:genre', async (req, res) => {
+app.get('/movies/genre/:genre', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { genre } = req.params;
 
   try {
@@ -241,7 +241,7 @@ app.get('/movies/genre/:genre', async (req, res) => {
 });
 
 // Infos about Directors
-app.get('/directors/:directorName', async (req, res) => {
+app.get('/directors/:directorName' , passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { directorName } = req.params;
 
   try {
