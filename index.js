@@ -136,7 +136,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
 });
 
 // Allow users to add a movie to their list of favorites
-app.post('/users/:Username/favorites/:movieID', async (req, res) => {
+app.post('/users/:Username/favorites/:movieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { Username, movieID } = req.params;
 
   try {
@@ -158,7 +158,7 @@ app.post('/users/:Username/favorites/:movieID', async (req, res) => {
 });
 
 // Allow users to remove a movie from their list of favorites
-app.delete('/users/:Username/favorites/:movieID', async (req, res) => {
+app.delete('/users/:Username/favorites/:movieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { Username, movieID } = req.params;
 
   try {
@@ -180,7 +180,7 @@ app.delete('/users/:Username/favorites/:movieID', async (req, res) => {
 });
 
 // Delete a user by username
-app.delete('/users/:Username', async (req, res) => {
+app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { Username } = req.params;
 
   try {
@@ -198,7 +198,7 @@ app.delete('/users/:Username', async (req, res) => {
 });
 
 // Read a list of movies
-app.get('/movies', async (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const movies = await Movies.find();
     res.status(200).json(movies);
