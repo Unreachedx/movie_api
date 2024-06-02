@@ -81,15 +81,20 @@ app.post('/users', [
 });
 
 // Get all users
-app.get('/users', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Users.find()
-    .then((users) => {
-      res.status(201).json(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
+app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+  try {
+    Users.find()
+      .then((users) => {
+        res.status(200).json(users); // Changed status from 201 to 200 (OK)
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: ' + error);
+  }
 });
 
 // Get a user by username
