@@ -85,7 +85,7 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
   try {
     Users.find()
       .then((users) => {
-        res.status(200).json(users); // Changed status from 201 to 200 (OK)
+        res.status(200).json(users);
       })
       .catch((err) => {
         console.error(err);
