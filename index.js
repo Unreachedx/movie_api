@@ -18,6 +18,8 @@ const auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
+// Define allowed origins for CORS
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234'];
 
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
