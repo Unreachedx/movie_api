@@ -15,43 +15,42 @@ module.exports = (app) => {
   passport.use(new LocalStrategy({
     usernameField: 'Username',
     passwordField: 'Password'
-  }, (username, password, callback) => {
+  }, async (username, password, callback) => {
     console.log(`Attempting login for username: ${username}`);
-    Users.findOne({ Username: username }, (error, user) => {
-      if (error) {
-        console.log('Error occurred while finding user:', error);
-        return callback(error);
-      }
-
+    try {
+      const user = await Users.findOne({ Username: username });
+  
       if (!user) {
         console.log('User not found for username:', username);
         return callback(null, false, { message: 'Incorrect username.' });
       }
-
+  
       const passwordIsValid = user.isValidPassword(password);
       console.log(`Password validation result for username ${username}: ${passwordIsValid}`);
-
+  
       if (!passwordIsValid) {
         console.log('Incorrect password for username:', username);
         return callback(null, false, { message: 'Incorrect password.' });
       }
-
+  
       console.log(`User authenticated successfully for username: ${username}`);
       return callback(null, user);
-    });
+    } catch (error) {
+      console.log('Error occurred while finding user:', error);
+      return callback(error);
+    }
   }));
 
   passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: jwtSecret
-  }, (jwtPayload, callback) => {
-    return Users.findById(jwtPayload._id)
-      .then((user) => {
-        return callback(null, user);
-      })
-      .catch((error) => {
-        return callback(error);
-      });
+  }, async (jwtPayload, callback) => {
+    try {
+      const user = await Users.findById(jwtPayload._id);
+      return callback(null, user);
+    } catch (error) {
+      return callback(error);
+    }
   }));
 
   app.post('/login', (req, res) => {
