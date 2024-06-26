@@ -19,7 +19,7 @@ const passport = require('passport');
 require('./passport');
 
 // Define allowed origins for CORS
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'http://localhost:1234/'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'http://localhost:1234];
 
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -38,6 +38,8 @@ app.use(cors({
     return callback(null, true);
   }
 }));
+
+app.options('*', cors()); // Enable pre-flight for all routes
 
 // Welcome message
 app.get('/', (req, res) => {
