@@ -19,7 +19,7 @@ const passport = require('passport');
 require('./passport');
 
 // Define allowed origins for CORS
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234',];
 
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -32,7 +32,7 @@ app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      let message = "The CORS policy for this application doesn't allow access from origin " + origin;
       return callback(new Error(message), false);
     }
     return callback(null, true);
