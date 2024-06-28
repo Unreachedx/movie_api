@@ -2,6 +2,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const passportJWT = require('passport-jwt');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
 const Models = require('./models.js');
 
 const jwtSecret = 'your_jwt_secret';
@@ -25,7 +26,7 @@ module.exports = (app) => {
         return callback(null, false, { message: 'Incorrect username.' });
       }
   
-      const passwordIsValid = user.isValidPassword(password);
+      const passwordIsValid = await bcrypt.compare(password, user.Password);
       console.log(`Password validation result for username ${username}: ${passwordIsValid}`);
   
       if (!passwordIsValid) {
@@ -47,8 +48,12 @@ module.exports = (app) => {
   }, async (jwtPayload, callback) => {
     try {
       const user = await Users.findById(jwtPayload._id);
+      if (!user) {
+        return callback(null, false, { message: 'User not found.' });
+      }
       return callback(null, user);
     } catch (error) {
+      console.error('Error occurred in JWT strategy:', error);
       return callback(error);
     }
   }));
@@ -58,16 +63,18 @@ module.exports = (app) => {
       if (error || !user) {
         console.log('Authentication failed:', error || info);
         return res.status(400).json({
-          message: 'Invalid credentials'
+          message: 'Invalid credentials',
+          error: error ? error.message : info.message
         });
       }
 
       req.login(user, { session: false }, (error) => {
         if (error) {
-          res.send(error);
+          console.error('Login error:', error);
+          return res.status(500).send(error);
         }
 
-        const token = jwt.sign({ username: user.Username }, jwtSecret, {
+        const token = jwt.sign({ _id: user._id }, jwtSecret, {
           expiresIn: '7d'
         });
 
