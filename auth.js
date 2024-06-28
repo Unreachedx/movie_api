@@ -19,20 +19,20 @@ module.exports = (app) => {
     console.log(`Attempting login for username: ${username}`);
     try {
       const user = await Users.findOne({ Username: username });
-  
+
       if (!user) {
         console.log('User not found for username:', username);
         return callback(null, false, { message: 'Incorrect username.' });
       }
-  
+
       const passwordIsValid = user.isValidPassword(password);
       console.log(`Password validation result for username ${username}: ${passwordIsValid}`);
-  
+
       if (!passwordIsValid) {
         console.log('Incorrect password for username:', username);
         return callback(null, false, { message: 'Incorrect password.' });
       }
-  
+
       console.log(`User authenticated successfully for username: ${username}`);
       return callback(null, user);
     } catch (error) {
@@ -64,17 +64,17 @@ module.exports = (app) => {
 
       req.login(user, { session: false }, (error) => {
         if (error) {
-          res.send(error);
+          return res.send(error);
         }
 
         const token = jwt.sign({ username: user.Username }, jwtSecret, {
           expiresIn: '7d'
         });
 
-        res.header('Access-Control-Allow-Origin', '*');
+        // Set CORS headers before sending the response
+        res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
         res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-
-        return res.json({ user, token });
+        res.json({ user, token });
       });
     })(req, res);
   });
