@@ -53,6 +53,15 @@ module.exports = (app) => {
     }
   }));
 
+  // Handle preflight OPTIONS request
+  app.options('/login', (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Credentials', 'true'); // Set to true for credentials
+    res.sendStatus(204);
+  });
+
   app.post('/login', (req, res) => {
     passport.authenticate('local', { session: false }, (error, user, info) => {
       if (error || !user) {
@@ -74,6 +83,7 @@ module.exports = (app) => {
         // Set CORS headers before sending the response
         res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
         res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+        res.header('Access-Control-Allow-Credentials', 'true'); // Ensure credentials are allowed
         res.json({ user, token });
       });
     })(req, res);
