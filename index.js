@@ -24,6 +24,7 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
 // Middleware setup
 app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' }) }));
 app.use(express.json());
+const auth = require('./auth')(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 app.use(cors({
@@ -43,7 +44,14 @@ app.use(cors({
 // Handle preflight requests
 app.options('*', cors());
 
-const auth = require('./auth')(app);
+// Handle preflight for /login explicitly
+app.options('/login', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.sendStatus(204);
+});
+
 
 // Welcome message
 app.get('/', (req, res) => {
