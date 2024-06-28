@@ -13,7 +13,6 @@ const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;
 
-const auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
@@ -25,6 +24,7 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
 // Middleware setup
 app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' }) }));
 app.use(express.json());
+const auth = require('./auth')(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 app.use(cors({
