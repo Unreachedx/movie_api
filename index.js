@@ -17,18 +17,13 @@ const passport = require('passport');
 require('./passport');
 
 // Define allowed origins for CORS
-let allowedOrigins = [
-  "http://localhost:1234", // Ensure this is the correct port for your frontend
-  "http://testsite.com",
-  "http://localhost:8080"
-];
+let allowedOrigins = ["http://localhost:1234", "http://testsite.com", "http://localhost:8080"];
 
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Middleware setup
 app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' }) }));
 app.use(express.json());
-const auth = require('./auth')(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 app.use(cors({
@@ -47,6 +42,8 @@ app.use(cors({
 
 // Handle preflight requests
 app.options('*', cors());
+
+const auth = require('./auth')(app);
 
 // Welcome message
 app.get('/', (req, res) => {
