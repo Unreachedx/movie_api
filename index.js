@@ -16,9 +16,6 @@ const Users = Models.User;
 const passport = require('passport');
 require('./passport');
 
-// Define allowed origins for CORS
-let allowedOrigins = ["http://localhost:1234", "http://testsite.com", "http://localhost:8080"];
-
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Middleware setup
@@ -27,31 +24,27 @@ app.use(express.json());
 const auth = require('./auth')(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      let message = "The CORS policy for this application doesn't allow access from origin " + origin;
-      return callback(new Error(message), false);
-    }
-    return callback(null, true);
-  },
+
+const corsOptions = {
+  origin: 'http://localhost:1234',
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type,Authorization',
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Handle preflight requests
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // Handle preflight for /login explicitly
 app.options('/login', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
   res.sendStatus(204);
 });
-
 
 // Welcome message
 app.get('/', (req, res) => {
