@@ -1,8 +1,8 @@
 const jwtSecret = 'your_jwt_secret'; // Replace with your actual JWT secret
 const passport = require('passport');
-/* const LocalStrategy = require('passport-local').Strategy; */
+const LocalStrategy = require('passport-local').Strategy;
 const Models = require('./models.js');
-const passportJWT = require('passport-jwt');
+/* const passportJWT = require('passport-jwt'); */
 
 const Users = Models.User;
 /* const JWTStrategy = passportJWT.Strategy; */
