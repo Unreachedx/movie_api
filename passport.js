@@ -1,11 +1,10 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const Models = require('./models.js');
 const passportJWT = require('passport-jwt');
-
-let Users = Models.User;
-let JWTStrategy = passportJWT.Strategy;
-let ExtractJWT = passportJWT.ExtractJwt;
+const Models = require('./models.js');
+const { User } = Models;
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 
 passport.use(new LocalStrategy({
   usernameField: 'Username',
@@ -14,7 +13,7 @@ passport.use(new LocalStrategy({
   console.log(`Attempting to authenticate user: ${username}`);
   
   try {
-    let user = await Users.findOne({ Username: username });
+    let user = await User.findOne({ Username: username });
     
     if (!user) {
       console.log('Incorrect username');
@@ -34,26 +33,20 @@ passport.use(new LocalStrategy({
     return callback(error);
   }
 }));
-const jwtSecret = 'your_jwt_secret';
 
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: jwtSecret
+  secretOrKey: 'your_jwt_secret'
 }, async (jwtPayload, callback) => {
   try {
-    let user = await Users.findOne({ Username: jwtPayload.username });
+    const user = await User.findById(jwtPayload.id);
     if (user) {
       return callback(null, user);
     } else {
       return callback(null, false);
     }
   } catch (error) {
+    console.error('Error:', error);
     return callback(error);
   }
 }));
-
-
-
-
-
-
