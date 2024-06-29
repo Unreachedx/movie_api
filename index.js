@@ -21,6 +21,7 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
 // Middleware setup
 app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' }) }));
 app.use(express.json());
+const auth = require('./auth')(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
@@ -35,7 +36,13 @@ app.use(cors(corsOptions));
 
 // Handle preflight requests
 app.options('*', cors(corsOptions));
-app.options('/login', cors(corsOptions), (req, res) => {
+
+// Handle preflight for /login explicitly
+app.options('/login', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
   res.sendStatus(204);
 });
 
@@ -47,7 +54,7 @@ app.get('/', (req, res) => {
 // Create new user
 app.post('/users', [
   check('Username', 'Username is required').isLength({ min: 5 }),
-  check('Username', 'Username contains non-alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
   check('Password', 'Password is required').not().isEmpty(),
   check('Email', 'Email does not appear to be valid').isEmail()
 ], async (req, res) => {
@@ -220,7 +227,7 @@ app.get('/movies/:title', passport.authenticate('jwt', { session: false }), asyn
   const { title } = req.params;
 
   try {
-    const movie = await Movies.findOne({ Title: title });
+    const movie = await Movies.findOne({ title });
     if (!movie) {
       return res.status(404).send('Movie not found');
     }
@@ -236,7 +243,7 @@ app.get('/movies/genre/:genre', passport.authenticate('jwt', { session: false })
   const { genre } = req.params;
 
   try {
-    const moviesByGenre = await Movies.find({ 'Genre.Name': genre });
+    const moviesByGenre = await Movies.find({ genre });
     if (moviesByGenre.length === 0) {
       return res.status(404).send('No movies found for the specified genre');
     }
@@ -252,14 +259,14 @@ app.get('/directors/:directorName', passport.authenticate('jwt', { session: fals
   const { directorName } = req.params;
 
   try {
-    const moviesByDirector = await Movies.find({ 'Director.Name': directorName });
+    const moviesByDirector = await Movies.find({ 'director.name': directorName });
     if (moviesByDirector.length === 0) {
       return res.status(404).send('No movies found for the specified director');
     }
 
     const directorInfo = {
       name: directorName,
-      movies: moviesByDirector.map(movie => movie.Title)
+      movies: moviesByDirector.map(movie => movie.title)
     };
     res.status(200).json(directorInfo);
   } catch (error) {
