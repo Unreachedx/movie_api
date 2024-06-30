@@ -9,13 +9,14 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const app = express();
+require('dotenv').config()
 
 const Movies = Models.Movie;
 const Users = Models.User;
 
 const passport = require('passport');
 require('./passport');
-
+console.log(process.env)
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Middleware setup
@@ -33,7 +34,9 @@ const corsOptions = {
 };
 
 /* app.use(cors(corsOptions)); */
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:1234'
+}));
 
 // Handle preflight requests
 /* app.options('*', cors(corsOptions)); */
