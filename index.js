@@ -30,19 +30,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
-/* // CORS setup
-const corsOptions = {
-  origin: 'http://localhost:1234',
-  methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization',
-  credentials: true // enable set cookie
-};
-
-app.use(cors(corsOptions));
+// CORS setup
+app.use(cors()); // Allow all origins for now, you can refine this later
 
 // Handle preflight requests
-app.options('*', cors(corsOptions));
- */
+app.options('*', cors());
+
 // Welcome message
 app.get('/', (req, res) => {
   res.send('Welcome to my movie app!');
