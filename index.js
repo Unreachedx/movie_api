@@ -1,4 +1,3 @@
-require('dotenv').config(); // Load environment variables
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
@@ -10,6 +9,9 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const passport = require('passport');
+const dotenv = require('dotenv'); // Load dotenv package
+
+dotenv.config(); // Load environment variables
 
 const app = express();
 const Movies = Models.Movie;
@@ -29,17 +31,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
 // CORS setup
-const corsOptions = {
-  origin: 'http://localhost:1234',
-  methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization',
-  credentials: true
-};
-
-app.use(cors(corsOptions));
+app.use(cors()); // Allow all origins for now, you can refine this later
 
 // Handle preflight requests
-app.options('*', cors(corsOptions));
+app.options('*', cors());
 
 // Welcome message
 app.get('/', (req, res) => {
@@ -273,14 +268,11 @@ app.get('/directors/:directorName', passport.authenticate('jwt', { session: fals
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something went wrong!');
+  res.status(500).send('Something broke!');
 });
 
-// Static files
-app.use(express.static('public'));
-
-// Start the server
+// Listen for requests
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
-  console.log('Listening on Port ' + port);
+  console.log(`Listening on Port ${port}`);
 });
