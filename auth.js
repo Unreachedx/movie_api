@@ -2,6 +2,7 @@ const jwtSecret = 'your_jwt_secret'; // Replace with your actual JWT secret
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const Models = require('./models.js');
+const jwt = require('jsonwebtoken'); // Add this line
 
 const Users = Models.User;
 
