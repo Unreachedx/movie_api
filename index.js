@@ -38,6 +38,16 @@ const corsOptions = {
   methods: 'GET,POST,PUT,DELETE,OPTIONS', // Methods that are allowed
 };
 
+app.use(cors(corsOptions));
+
+app.post('/login', (req, res) => {
+  // Handle login logic
+  res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
+  res.header('Access-Control-Allow-Credentials', 'true');
+    // Other response handling
+    res.json({ message: 'Login successful' });
+  });
+
 // Handle preflight requests
 app.options('*', cors());
 
