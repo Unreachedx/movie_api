@@ -31,10 +31,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
 // CORS setup
-app.use(cors()); // Allow all origins for now, you can refine this later
+const corsOptions = {
+  origin: 'http://localhost:1234',
+  methods: 'GET,POST,PUT,DELETE,OPTIONS',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true // enable set cookie
+};
+
+app.use(cors(corsOptions));
 
 // Handle preflight requests
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // Welcome message
 app.get('/', (req, res) => {
