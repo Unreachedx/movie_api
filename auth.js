@@ -35,6 +35,14 @@ passport.use(new LocalStrategy(
   }
 ));
 
+app.options('/login', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:1234');
+  res.setHeader('Access-Control-Allow-Methods', 'POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.status(200).end();
+});
+
 app.post('/login', (req, res, next) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:1234');
@@ -42,8 +50,8 @@ app.post('/login', (req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 
-  // Continue with your existing code for handling the login route
-});
+      // Continue with your existing code for handling the login route
+    });
 
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
