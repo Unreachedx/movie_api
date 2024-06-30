@@ -1,4 +1,4 @@
-const jwtSecret = 'your_jwt_secret'; // Replace with your actual JWT secret
+const jwtSecret = process.env.JWT_SECRET; // Use environment variable for JWT secret
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const Models = require('./models.js');
@@ -24,7 +24,7 @@ passport.use(new LocalStrategy(
           console.log('Password does not match');
           return callback(null, false, { message: 'Incorrect username or password.' });
         }
-        
+
         console.log('Authentication successful');
         return callback(null, user);
       })
@@ -35,9 +35,9 @@ passport.use(new LocalStrategy(
   }
 ));
 
-var JwtStrategy = require('passport-jwt').Strategy,
+const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
-var opts = {}
+let opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = jwtSecret;
 
@@ -76,6 +76,11 @@ module.exports = function (app) {
         const token = jwt.sign({ username: user.Username, id: user._id }, jwtSecret, {
           expiresIn: '7d'
         });
+
+        res.header('Access-Control-Allow-Credentials', 'true');
+        res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
+        res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+        res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
 
         return res.json({ user, token });
       });

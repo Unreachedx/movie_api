@@ -1,3 +1,4 @@
+require('dotenv').config(); // Load environment variables
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
@@ -9,7 +10,6 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const passport = require('passport');
-require('dotenv').config();
 
 const app = express();
 const Movies = Models.Movie;
@@ -17,7 +17,7 @@ const Users = Models.User;
 
 // Passport configuration
 app.use(passport.initialize());
-require('./passport');
+require('./auth')(app);
 
 // Connect to MongoDB
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -40,38 +40,6 @@ app.use(cors(corsOptions));
 
 // Handle preflight requests
 app.options('*', cors(corsOptions));
-
-// Login endpoint
-app.post('/login', (req, res, next) => {
-  console.log('Login request body:', req.body);
-  next();
-}, (req, res) => {
-  passport.authenticate('local', { session: false }, (error, user, info) => {
-    if (error || !user) {
-      console.log('Authentication failed:', error || info);
-      return res.status(400).json({
-        message: 'Invalid credentials'
-      });
-    }
-
-    req.login(user, { session: false }, (error) => {
-      if (error) {
-        res.send(error);
-      }
-
-      const token = jwt.sign({ username: user.Username, id: user._id }, jwtSecret, {
-        expiresIn: '7d'
-      });
-
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
-      res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-      res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-
-      return res.json({ user, token });
-    });
-  })(req, res);
-});
 
 // Welcome message
 app.get('/', (req, res) => {
