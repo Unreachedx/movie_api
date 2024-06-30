@@ -32,19 +32,20 @@ const corsOptions = {
   credentials: true
 };
 
-app.use(cors(corsOptions));
+/* app.use(cors(corsOptions)); */
+app.use(cors());
 
 // Handle preflight requests
-app.options('*', cors(corsOptions));
+/* app.options('*', cors(corsOptions)); */
 
 // Handle preflight for /login explicitly
-app.options('/login', (req, res) => {
+/* app.options('/login', (req, res) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.sendStatus(204);
-});
+}); */
 
 // Welcome message
 app.get('/', (req, res) => {
