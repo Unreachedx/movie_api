@@ -8,25 +8,27 @@ const methodOverride = require('method-override');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
-const app = express();
+const passport = require('passport');
 require('dotenv').config()
 
+const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;
 
-const passport = require('passport');
+// Passport configuration
 app.use(passport.initialize());
 require('./passport');
-console.log(process.env)
+
+// Connect to MongoDB
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Middleware setup
 app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' }) }));
 app.use(express.json());
-const auth = require('./auth')(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
+// CORS setup
 const corsOptions = {
   origin: 'http://localhost:1234',
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
@@ -35,20 +37,14 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-/* app.use(cors({
-  origin: 'http://localhost:1234'
-})); */
 
 // Handle preflight requests
 app.options('*', cors(corsOptions));
 
-// Handle preflight for /login explicitly
-app.options('/login', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+// Login endpoint
+app.post('/login', (req, res) => {
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(204);
+  // Your login logic here
 });
 
 // Welcome message
