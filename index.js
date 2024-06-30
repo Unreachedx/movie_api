@@ -15,6 +15,7 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 const passport = require('passport');
+app.use(passport.initialize());
 require('./passport');
 console.log(process.env)
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
