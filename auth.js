@@ -1,4 +1,4 @@
-const jwtSecret = process.env.JWT_SECRET; // Use environment variable for JWT secret
+const jwtSecret = process.env.JWT_SECRET;
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const Models = require('./models.js');
