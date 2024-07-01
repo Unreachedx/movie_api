@@ -12,7 +12,6 @@ const passport = require('passport');
 const dotenv = require('dotenv'); // Load dotenv package
 const auth = require('./auth');
 
-auth(app);
 
 dotenv.config(); // Load environment variables
 
@@ -37,6 +36,8 @@ app.use(cors({
 }));
 
 app.options('*', cors()); // Enable preflight across all routes
+
+auth(app);
 
 // Passport configuration
 app.use(passport.initialize());
