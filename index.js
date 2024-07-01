@@ -9,13 +9,24 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const passport = require('passport');
-const dotenv = require('dotenv'); // Load dotenv package
+const dotenv = require('dotenv');
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;
+
+// CORS setup
+app.use(cors({
+  origin: 'http://localhost:1234', // Your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Passport configuration
 app.use(passport.initialize());
@@ -29,17 +40,6 @@ app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, '
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
-
-// CORS setup
-app.use(cors({
-  origin: 'http://localhost:1234', // Update this to your frontend domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
-
-// Ensure preflight requests are handled
-app.options('*', cors());
 
 // Welcome message
 app.get('/', (req, res) => {
