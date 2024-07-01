@@ -57,9 +57,8 @@ passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
 
 module.exports = function (app) {
   app.post('/login', (req, res, next) => {
-    console.log('Login request body:', req.body);
-    next();
-  }, (req, res) => {
+    console.log('Login request body:', req.body); // Debugging line
+
     passport.authenticate('local', { session: false }, (error, user, info) => {
       if (error || !user) {
         console.log('Authentication failed:', error || info);
@@ -79,6 +78,6 @@ module.exports = function (app) {
 
         return res.json({ user, token });
       });
-    })(req, res);
+    })(req, res, next);
   });
 };

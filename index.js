@@ -5,9 +5,7 @@ const Models = require('./models.js');
 const fs = require('fs');
 const path = require('path');
 const methodOverride = require('method-override');
-const bcrypt = require('bcrypt');
 const cors = require('cors');
-const { check, validationResult } = require('express-validator');
 const passport = require('passport');
 const dotenv = require('dotenv');
 
@@ -46,22 +44,6 @@ app.get('/', (req, res) => {
   res.send('Welcome to my movie app!');
 });
 
-// Login route
-app.post('/login', (req, res, next) => {
-  console.log('Login request body:', req.body); // Debugging line
-
-  passport.authenticate('local', (err, user, info) => {
-    if (err) return next(err);
-    if (!user) return res.status(400).json({ message: info.message });
-
-    req.login(user, { session: false }, (err) => {
-      if (err) return res.status(500).json({ message: 'Login failed' });
-
-      const token = jwt.sign(user.toJSON(), 'your_jwt_secret');
-      return res.json({ user, token });
-    });
-  })(req, res, next);
-});
 
 // Create new user
 app.post('/users', [
