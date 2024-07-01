@@ -5,30 +5,21 @@ const Models = require('./models.js');
 const fs = require('fs');
 const path = require('path');
 const methodOverride = require('method-override');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
+const { check, validationResult } = require('express-validator');
 const passport = require('passport');
-const dotenv = require('dotenv');
+const dotenv = require('dotenv'); // Load dotenv package
 
-dotenv.config();
+dotenv.config(); // Load environment variables
 
 const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;
 
-// CORS setup
-app.use(cors({
-  origin: 'http://localhost:1234', // Your frontend domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
-
-// Handle preflight requests
-app.options('*', cors());
-
 // Passport configuration
 app.use(passport.initialize());
-require('./auth')(app); // Ensure this file contains passport configuration
+require('./auth')(app);
 
 // Connect to MongoDB
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -39,11 +30,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
+// CORS setup
+app.use(cors({
+  origin: 'http://localhost:1234', // Update this to your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+app.post('/login', (req, res) => {
+  // Handle login logic
+  res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
+  res.header('Access-Control-Allow-Credentials', 'true');
+    // Other response handling
+    res.json({ message: 'Login successful' });
+  });
+
+// Handle preflight requests
+app.options('*', cors());
+
 // Welcome message
 app.get('/', (req, res) => {
   res.send('Welcome to my movie app!');
 });
-
 
 // Create new user
 app.post('/users', [

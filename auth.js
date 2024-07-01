@@ -1,4 +1,4 @@
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET; // Use environment variable for JWT secret
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const Models = require('./models.js');
@@ -57,8 +57,9 @@ passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
 
 module.exports = function (app) {
   app.post('/login', (req, res, next) => {
-    console.log('Login request body:', req.body); // Debugging line
-
+    console.log('Login request body:', req.body);
+    next();
+  }, (req, res) => {
     passport.authenticate('local', { session: false }, (error, user, info) => {
       if (error || !user) {
         console.log('Authentication failed:', error || info);
@@ -78,6 +79,6 @@ module.exports = function (app) {
 
         return res.json({ user, token });
       });
-    })(req, res, next);
+    })(req, res);
   });
 };
