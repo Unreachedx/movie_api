@@ -1,54 +1,37 @@
-const jwtSecret = process.env.JWT_SECRET;
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const jwt = require('jsonwebtoken');
-const Models = require('./models.js');
+const dotenv = require('dotenv');
+const { check, validationResult } = require('express-validator');
 
-const Users = Models.User;
+dotenv.config();
 
-// Configure Local Strategy for Passport
-passport.use(new LocalStrategy(
-  {
-    usernameField: 'Username',
-    passwordField: 'Password'
-  },
-  (username, password, callback) => {
-    Users.findOne({ Username: username })
-      .then((user) => {
-        if (!user) {
-          return callback(null, false, { message: 'Incorrect username or password.' });
-        }
+const jwtSecret = process.env.JWT_SECRET;
+const jwtExpiry = '7d';
 
-        if (!user.isValidPassword(password)) {
-          return callback(null, false, { message: 'Incorrect username or password.' });
-        }
-
-        return callback(null, user);
-      })
-      .catch((err) => callback(err));
-  }
-));
-
-// Function to generate JWT token
-const generateToken = (user) => {
-  return jwt.sign({ username: user.Username, id: user._id }, jwtSecret, { expiresIn: '7d' });
+const generateJWTToken = (user) => {
+  return jwt.sign({ id: user._id, username: user.Username }, jwtSecret, { expiresIn: jwtExpiry });
 };
 
-module.exports = function (app) {
-  // Handle POST request to /login
-  app.post('/login', (req, res, next) => {
-    passport.authenticate('local', { session: false }, (error, user, info) => {
-      if (error || !user) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+module.exports = (app) => {
+  app.post('/login', [
+    check('Username', 'Username is required').not().isEmpty(),
+    check('Password', 'Password is required').not().isEmpty(),
+  ], (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+      if (err || !user) {
+        return res.status(400).json({ message: 'Something is not right', user });
       }
 
-      req.login(user, { session: false }, (error) => {
-        if (error) {
-          res.send(error);
+      req.login(user, { session: false }, (err) => {
+        if (err) {
+          res.send(err);
         }
-
-        const token = generateToken(user);
-
+        const token = generateJWTToken(user);
         return res.json({ user, token });
       });
     })(req, res, next);

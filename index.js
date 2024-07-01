@@ -9,11 +9,10 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const passport = require('passport');
-const dotenv = require('dotenv'); // Load dotenv package
-const auth = require('./auth');
+const dotenv = require('dotenv');
+const auth = require('./auth'); // Make sure auth.js is imported
 
-
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const app = express();
 const Movies = Models.Movie;
@@ -24,28 +23,18 @@ let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://lo
 
 app.use(cors({
   origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
+      return callback(new Error(message), false);
     }
     return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Add allowed methods here
-  allowedHeaders: ['Content-Type', 'Authorization'] // Add allowed headers here
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.options('*', cors()); // Enable preflight across all routes
-
-auth(app);
-
-// Passport configuration
-app.use(passport.initialize());
-require('./auth')(app);
-
-
-// Connect to MongoDB
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+app.options('*', cors()); 
 
 // Middleware setup
 app.use(morgan('combined', { stream: fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' }) }));
@@ -53,7 +42,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
+// Connect to MongoDB
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+// Initialize Passport and auth routes
+require('./passport'); // Ensure passport.js is required to initialize strategies
+app.use(passport.initialize());
+auth(app); // Initialize auth routes after passport
 
 // Welcome message
 app.get('/', (req, res) => {
@@ -100,19 +95,14 @@ app.post('/users', [
 
 // Get all users
 app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
-  try {
-    Users.find()
-      .then((users) => {
-        res.status(200).json(users);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error: ' + error);
-  }
+  Users.find()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // Get a user by username
@@ -268,14 +258,14 @@ app.get('/directors/:directorName', passport.authenticate('jwt', { session: fals
   const { directorName } = req.params;
 
   try {
-    const moviesByDirector = await Movies.find({ 'director.name': directorName });
+    const moviesByDirector = await Movies.find({ 'Director.Name': directorName });
     if (moviesByDirector.length === 0) {
       return res.status(404).send('No movies found for the specified director');
     }
 
     const directorInfo = {
       name: directorName,
-      movies: moviesByDirector.map(movie => movie.title)
+      movies: moviesByDirector.map(movie => movie.Title)
     };
     res.status(200).json(directorInfo);
   } catch (error) {
