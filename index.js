@@ -10,6 +10,9 @@ const cors = require('cors');
 const { check, validationResult } = require('express-validator');
 const passport = require('passport');
 const dotenv = require('dotenv'); // Load dotenv package
+const auth = require('./auth');
+
+auth(app);
 
 dotenv.config(); // Load environment variables
 
@@ -37,6 +40,7 @@ app.use(cors({
 // Passport configuration
 app.use(passport.initialize());
 require('./auth')(app);
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
