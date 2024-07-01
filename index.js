@@ -30,7 +30,7 @@ app.options('*', cors());
 
 // Passport configuration
 app.use(passport.initialize());
-require('./auth')(app);
+require('./auth')(app); // Ensure this file contains passport configuration
 
 // Connect to MongoDB
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -44,6 +44,23 @@ app.use(methodOverride());
 // Welcome message
 app.get('/', (req, res) => {
   res.send('Welcome to my movie app!');
+});
+
+// Login route
+app.post('/login', (req, res, next) => {
+  console.log('Login request body:', req.body); // Debugging line
+
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.status(400).json({ message: info.message });
+
+    req.login(user, { session: false }, (err) => {
+      if (err) return res.status(500).json({ message: 'Login failed' });
+
+      const token = jwt.sign(user.toJSON(), 'your_jwt_secret');
+      return res.json({ user, token });
+    });
+  })(req, res, next);
 });
 
 // Create new user
