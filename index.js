@@ -38,6 +38,8 @@ app.use(cors({
   credentials: true,
 }));
 
+// Ensure preflight requests are handled
+app.options('*', cors());
 
 // Welcome message
 app.get('/', (req, res) => {
