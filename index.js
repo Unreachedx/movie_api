@@ -34,8 +34,12 @@ app.use(cors({
       return callback(new Error(message ), false);
     }
     return callback(null, true);
-  }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Add allowed methods here
+  allowedHeaders: ['Content-Type', 'Authorization'] // Add allowed headers here
 }));
+
+app.options('*', cors()); // Enable preflight across all routes
 
 // Passport configuration
 app.use(passport.initialize());
