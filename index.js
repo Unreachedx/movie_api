@@ -31,25 +31,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride());
 
 // CORS setup
-const corsOptions = {
-  origin: 'http://localhost:1234', 
-  credentials: true,  // This allows the credentials to be sent with the request
-  allowedHeaders: 'Content-Type,Authorization',  // Headers that can be accepted
-  methods: 'GET,POST,PUT,DELETE,OPTIONS', // Methods that are allowed
-};
+app.use(cors({
+  origin: 'http://localhost:1234', // Update this to your frontend domain
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
 
-app.use(cors(corsOptions));
-
-app.post('/login', (req, res) => {
-  // Handle login logic
-  res.header('Access-Control-Allow-Origin', 'http://localhost:1234');
-  res.header('Access-Control-Allow-Credentials', 'true');
-    // Other response handling
-    res.json({ message: 'Login successful' });
-  });
-
-// Handle preflight requests
-app.options('*', cors());
 
 // Welcome message
 app.get('/', (req, res) => {
