@@ -36,22 +36,7 @@ passport.use(new LocalStrategy({
 }));
 const jwtSecret = 'your_jwt_secret';
 
-passport.use(new JWTStrategy({
-  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: jwtSecret
-}, async (jwtPayload, callback) => {
-  try {
-    let user = await Users.findOne({ Username: jwtPayload.username });
-    if (user) {
-      return callback(null, user);
-    } else {
-      return callback(null, false);
-    }
-  } catch (error) {
-    return callback(error);
-  }
-}));
-
+passport.use(new JWTStrategy({ jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), secretOrKey: jwtSecret }, async (jwtPayload, callback) => { console.log(jwtPayload, 'jwtPayload'); try { let user = await Users.findById(jwtPayload.id); if (user) { return callback(null, user); } else { return callback(null, false); } } catch (error) { return callback(error); } }));
 
 
 
