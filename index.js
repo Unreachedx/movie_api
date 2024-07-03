@@ -19,7 +19,7 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 // CORS setup
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://yourgithubpagesurl.com']; 
 
 app.use(cors({
   origin: (origin, callback) => {
