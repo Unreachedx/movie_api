@@ -41,10 +41,16 @@ passport.use(new JWTStrategy({
   secretOrKey: jwtSecret
 }, async (jwtPayload, callback) => {
   try {
-    let user = await Users.findById(jwtPayload.id);
-    if (user) { return callback(null, user); } 
-    else { return callback(null, false); } } 
-    catch (error) { return callback(error); } }));
+    let user = await Users.findOne({ Username: jwtPayload.username });
+    if (user) {
+      return callback(null, user);
+    } else {
+      return callback(null, false);
+    }
+  } catch (error) {
+    return callback(error);
+  }
+}));
 
 
 
