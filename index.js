@@ -19,7 +19,7 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 // CORS setup
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://yourgithubpagesurl.com', 'https://myflix-paddy.netlify.app/']; 
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://yourgithubpagesurl.com', 'https://myflix-paddy.netlify.app']; 
 
 app.use(cors({
   origin: (origin, callback) => {
