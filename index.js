@@ -94,6 +94,26 @@ app.post('/users', [
     });
 });
 
+// Read a specific movie by movieID (added this endpoint)
+app.get('/movies/:movieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  const { movieID } = req.params; // Extract movieID from the URL parameters
+
+  try {
+    // Find the movie by its ID (using MongoDB's ObjectId type)
+    const movie = await Movies.findById(movieID);
+    
+    if (!movie) {
+      return res.status(404).send('Movie not found');
+    }
+
+    // Send the movie data in response
+    res.status(200).json(movie);
+  } catch (error) {
+    console.error('Error retrieving movie by ID:', error);
+    res.status(500).send('Error: ' + error);
+  }
+});
+
 // Get all users
 app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.find()
